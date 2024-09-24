@@ -57,7 +57,7 @@ services:
 </details>
 
 > 3. muti-stage 빌드 사용 :
-단일 Dockerfile에서 여러 FROM 문을 사용 가능 -> 최종 이미지에서 빌드 시간 종속성 및 아티팩트를 제거 가능 -> 최족 이미지 크기 줄어듬
+단일 Dockerfile에서 여러 FROM 문을 사용 가능 -> 최종 이미지에서 빌드 시간 종속성 및 아티팩트를 제거 가능 -> 최종 이미지 크기 줄어듬
 
 <details>
 <summary>예시</summary>
@@ -125,7 +125,7 @@ docker-compose.yml
 </details>
 
 > 6. tag 사용 :
-latest 태그 대신 특정 버전 태그를 사용하여 재현성을 보장하고 예상 외의 변수를 차ㅏㄷㄴ.
+latest 태그 대신 특정 버전 태그를 사용하여 재현성을 보장하고 예상 외의 변수를 차단
 
 <details>
 <summary>예시</summary>
