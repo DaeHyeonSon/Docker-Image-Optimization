@@ -11,9 +11,6 @@
 ### 개요 🚩
 Docker 이미지를 최적화를 위한 방법론에 대해 분석한 뒤 예제를 통해 최적화를 진행해보고자 한다.
 
-### 작가의 의도 파악 🙄 -> [Reference]
-Docker 이미지 최적화는 애플리케이션의 총비용, 효율성, 보안성 및 유지보수성을 향상시키는 중요한 실천사항이다. 이러한 체계적인 최적화 기법의 적용, 지속적인 개선, 팀과의 협업을 통해 개발자들이 보다 견고하고 성능이 우수한 배포를 실현할 수 있다.
-
 <br>
 
 > 1. 최소 기본 이미지 선택 :
@@ -311,6 +308,92 @@ docker buildx build --squash -t myimage:latest .
 </details>
 
 <hr>
+
+### 최소화된 기본 Image 사용 실습
+`Dockerfile.ubuntu`, `Dockerfile.alpine`, `Dockerfile.distroless`를 사용하여 이미지를 경량화 하여 본다.
+
+실행시킬 간단한 java 프로그램
+```java
+HelloWorld.java
+
+public class HelloWorld{
+    public static void main(String[] args){
+        System.out.println("Hello World");
+    }
+}
+```
+
+`Dockerfile.ubuntu`
+```dockerfile
+Dockerfile.ubuntu
+
+FROM openjdk:17
+COPY . /usr/src/myapp
+WORKDIR /usr/src/myapp
+RUN javac HelloWorld.java
+CMD ["java", "HelloWorld"]
+
+* 일반적인 패키지 관리 및 시스템 사용 가능, 크기가 가장 큼
+```
+
+`Dockerfile.alpine`
+```dockerfile
+Dockerfile.alpine
+
+FROM openjdk:17-alpine
+COPY . /usr/src/myapp
+WORKDIR /usr/src/myapp
+RUN javac HelloWorld.java
+CMD ["java", "HelloWorld"]
+
+
+* 경량화된 이미지로 크기를 줄일 수 있음 
+```
+
+`Dockerfile.distroless`
+```dockerfile
+Dockerfile.distroless
+
+# 첫 번째 단계: JDK로 Java 파일 컴파일
+FROM openjdk:17-alpine AS build
+
+# 애플리케이션 소스 복사
+COPY . /usr/src/myapp
+WORKDIR /usr/src/myapp
+
+# HelloWorld.java 컴파일 및 JAR 파일 생성
+RUN javac HelloWorld.java && jar cfe HelloWorld.jar HelloWorld HelloWorld.class
+
+# 두 번째 단계: Distroless 기반 경량 이미지
+FROM gcr.io/distroless/java17
+
+# JAR 파일을 Distroless 이미지로 복사
+COPY --from=build /usr/src/myapp/HelloWorld.jar /usr/src/myapp/HelloWorld.jar
+
+# 실행할 JAR 파일을 지정
+WORKDIR /usr/src/myapp
+
+# Distroless에서는 Java 명령어로 JAR 파일 실행
+CMD ["HelloWorld.jar"]
+
+* 실행 환경만 포함된 이미지를 사용하여
+보안을 강화하고 크기를 극도로 줄일 수 있음 
+```
+
+**결과** 💬
+<br>
+
+`helloworld-distroless`의 용량이 가장 적은 것을 확인할 수 있다. 이는 구글에서 제공하는 이미지, 어플리케이션과 런타임 종속성만을 포함하여 표준 Linux 배포판에서 볼 수 있는 package manager, shell 등의 프로그램들이 포함되어 있지 않아서 이미지 경량화가 가능하며, 불필요한 프로그램이 없기 때문에 보안 쪽으로도 장점을 가짐
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/99b93792-c12b-4cbb-988e-1ee3c4ad1765" width="50%">
+  <img src="https://github.com/user-attachments/assets/a0adba2e-3759-440e-8fdc-76b9b307da14" width="13%">
+</div>
+
+
+
+### 결론 🙄 (작가의 의도 파악) -> [Reference]
+Docker 이미지 최적화는 애플리케이션의 총비용, 효율성, 보안성 및 유지보수성을 향상시키는 중요한 실천사항이다. 이러한 체계적인 최적화 기법의 적용, 지속적인 개선, 팀과의 협업을 통해 개발자들이 보다 견고하고 성능이 우수한 배포를 실현할 수 있다.
 
 ### Reference 🙄
 https://overcast.blog/docker-image-optimization-tips-tricks-6a17f687162b
