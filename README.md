@@ -413,6 +413,7 @@ Docker 이미지 최적화는 애플리케이션의 총비용, 효율성, 보안
 
 ### Reference 🙄
 https://overcast.blog/docker-image-optimization-tips-tricks-6a17f687162b
+https://faun.pub/reduce-the-size-of-the-docker-image-e6895b653419
 
 *본 실습은 위 자료를 참조하여 제작하였습니다.*
 
