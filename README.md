@@ -325,7 +325,7 @@ docker buildx build --squash -t myimage:latest .
 
 <hr>
 
-### 최소화된 기본 Image 사용 실습
+### 최소화된 기본 Image 사용 실습 🧷
 `Dockerfile.ubuntu`, `Dockerfile.alpine`, `Dockerfile.distroless`를 사용하여 이미지를 경량화 하여 본다.
 
 실행시킬 간단한 java 프로그램
@@ -408,7 +408,7 @@ CMD ["HelloWorld.jar"]
 
 
 
-### 결론 🙄 (작가의 의도 파악) -> [Reference]
+### 결론 💪 (작가의 의도 파악) -> [Reference]
 Docker 이미지 최적화는 애플리케이션의 총비용, 효율성, 보안성 및 유지보수성을 향상시키는 중요한 실천사항이다. 이러한 체계적인 최적화 기법의 적용, 지속적인 개선, 팀과의 협업을 통해 개발자들이 보다 견고하고 성능이 우수한 배포를 실현할 수 있다.
 
 ### Reference 🙄
