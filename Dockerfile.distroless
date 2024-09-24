@@ -1,0 +1,21 @@
+# 첫 번째 단계: JDK로 Java 파일 컴파일
+FROM openjdk:17-alpine AS build
+
+# 애플리케이션 소스 복사
+COPY . /usr/src/myapp
+WORKDIR /usr/src/myapp
+
+# HelloWorld.java 컴파일 및 JAR 파일 생성
+RUN javac HelloWorld.java && jar cfe HelloWorld.jar HelloWorld HelloWorld.class
+
+# 두 번째 단계: Distroless 기반 경량 이미지
+FROM gcr.io/distroless/java17
+
+# JAR 파일을 Distroless 이미지로 복사
+COPY --from=build /usr/src/myapp/HelloWorld.jar /usr/src/myapp/HelloWorld.jar
+
+# 실행할 JAR 파일을 지정
+WORKDIR /usr/src/myapp
+
+# Distroless에서는 Java 명령어로 JAR 파일 실행
+CMD ["HelloWorld.jar"]
