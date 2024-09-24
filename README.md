@@ -101,6 +101,17 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 ```
+```dockerfile
+FROM golang:1.18 as build
+RUN go mod download
+RUN go mode verify
+
+🔽
+
+FROM golang:1.18 as build
+RUN go mod download && go mod verify
+```
+
 
 </div>
 </details>
@@ -172,7 +183,7 @@ RUN tar -xzf dist.tar.gz && rm dist.tar.gz
 </div>
 </details>
 
-> 9.이미지 layer 검사 :
+> 9. 이미지 layer 검사 :
 docker history와 docker inspect 도구를 사용하여 레이어를 분석하고 최적화 기회 식별
 
 <details>
