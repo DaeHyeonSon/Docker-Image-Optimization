@@ -54,7 +54,7 @@ services:
 </details>
 
 > 3. muti-stage 빌드 사용 :
-단일 Dockerfile에서 여러 FROM 문을 사용 가능 -> 최종 이미지에서 빌드 시간 종속성 및 아티팩트를 제거 가능 -> 최종 이미지 크기 줄어듬
+컨테이너 기반 빌드는 편리하나 최종 이미지 용량이 커지는 단점이 존재함. 반면, 멀티스테이지 빌드는 여러 `FROM` 문을 사용해 필요한 파일만 복사함으로써 최종 이미지 용량을 줄일 수 있는 장점을 가짐. 즉, 멀티스테이지 빌드는 컨테이너 기반 빌드 환경의 장점을 유지하면서 불필요한 빌드 종속성과 아티팩트를 제거해 효율적인 디스트로리스 이미지를 생성할 수 있게 함.
 
 <details>
 <summary>예시</summary>
@@ -80,6 +80,22 @@ RUN npm ci --production
 COPY --from=build /app/dist ./dist
 
 CMD ["npm", "start"]
+```
+
+```dockerfile
+# 애플리케이션 빌드
+FROM python:3.11-alpine AS build
+
+WORKDIR /build
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+
+# Distroless 이미지로 복사
+FROM gcr.io/distroless/python3
+WORKDIR /app
+COPY --from=build /build /app
+CMD ["app.py"]  
 ```
 
 </div>
